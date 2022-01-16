@@ -9,11 +9,34 @@ Vue.createApp({
             tasks: [],
             isTaskInProgress: false,
             startTime: null,
+            nowTime: null,
+            intervalEverySecond: null,
             errorMsg: null
         }
     },
+    computed: {
+        currentDuration () {
+            if (this.startTime && this.nowTime ) {
+                return this.durationBetweenTimestamps(this.startTime, this.nowTime)
+            } else {
+                return '00:00:00'
+            }
+        },
+    },
+    watch: {
+    isTaskInProgress (isInProgress) {
+        if (isInProgress) {
+            this.intervalEverySecond = setInterval( () => {
+                this.nowTime = Date.now()
+            }, 1000)
+        } else {
+            clearInterval(this.intervalEverySecond);
+        }
+    }
+    },
     methods: {
         startTask () {
+            // check
             if (this.taskname.length === 0) {
                 this.errorMsg = "Le nom d'une tache ne peut pas etre vide"
                 return
@@ -23,8 +46,10 @@ Vue.createApp({
             } else {
                 this.errorMsg = null
             }
+            // start task
             this.isTaskInProgress = true
             this.startTime = Date.now()
+            this.nowTime = Date.now()
         },
         stopTask () {
             // check
@@ -42,6 +67,7 @@ Vue.createApp({
             // end of taks
             this.isTaskInProgress = false
             this.errorMsg = null
+            this.nowTime = null
             this.taskname = ''
         },
         getAnId () {
