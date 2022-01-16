@@ -29,16 +29,16 @@
              <tr>
                  <th scope="col">#</th>
                  <th scope="col">Tache</th>
-                 <th scope="col">Debut</th>
-                 <th scope="col">Fin</th>
+                 <th scope="col"></th>
+                 <th scope="col">Duree</th>
              </tr>
              </thead>
              <tbody>
              <tr v-for="task in tasks" :key="task.id">
                  <th scope="row">{{ task.id }}</th>
                  <td>{{ task.name }}</td>
-                 <td>{{ task.start }}</td>
-                 <td>{{ task.end }}</td>
+                 <td class="text-end">{{ formatTimeStamp(task.start) }} - {{ formatTimeStamp(task.end) }}</td>
+                 <td>{{ durationBetweenTimestamps(task.start, task.end) }}</td>
              </tr>
              </tbody>
          </table>
