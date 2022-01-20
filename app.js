@@ -5,6 +5,7 @@ Vue.createApp({
             logoSource: 'https://cdn.svgporn.com/logos/vue.svg',
             tsFormatter: Intl.DateTimeFormat('fr', { hour: '2-digit', minute: '2-digit'}),
             taskname: '',
+            numberCSS: 2,
             taskID: 0,
             tasks: [],
             isTaskInProgress: false,
@@ -69,6 +70,13 @@ Vue.createApp({
             this.errorMsg = null
             this.nowTime = null
             this.taskname = ''
+        },
+        toggleTask () {
+            if (this.isTaskInProgress) {
+                this.stopTask()
+            } else {
+                this.startTask()
+            }
         },
         getAnId () {
             this.taskID++

@@ -15,10 +15,12 @@
         <h4>Duree en cours: {{ currentDuration }}</h4>
     </div>
 
-    <form class="p-4">
+    <form class="p-4" @submit.prevent="toggleTask">
         <input v-model="taskname" type="text" class="form-control">
-        <button @click="startTask" type="button" class="btn btn-primary mt-2">Demarrer</button>
-        <button @click="stopTask" type="button" class="btn btn-danger mt-2 mx-2">Arreter</button>
+        <input v-model="numberCSS" type="number" class="form-control">
+        <button @click="toggleTask" type="button" :style="{ 'margin-top': numberCSS + 'px'}" class="btn" :class="isTaskInProgress ? 'btn-danger' : 'btn-primary' ">
+            {{ isTaskInProgress ? 'Arreter' : 'Demarrer' }}
+        </button>
         <div v-show="errorMsg" class="alert alert-danger mt-2" role="alert">
             {{ errorMsg }}
         </div>
