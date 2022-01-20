@@ -17,10 +17,13 @@
 
     <form class="p-4" @submit.prevent="toggleTask">
         <input v-model="taskname" type="text" class="form-control">
-        <input v-model="numberCSS" type="number" class="form-control">
-        <button @click="toggleTask" type="button" :style="{ 'margin-top': numberCSS + 'px'}" class="btn" :class="isTaskInProgress ? 'btn-danger' : 'btn-primary' ">
+<!--        <input v-model="numberCSS" type="number" class="form-control">-->
+        <button @click="toggleTask" type="button" class="btn" :class="isTaskInProgress ? 'btn-danger' : 'btn-primary' ">
             {{ isTaskInProgress ? 'Arreter' : 'Demarrer' }}
         </button>
+<!--        <button @click="toggleTask" type="button" :style="{ 'margin-top': numberCSS + 'px'}" class="btn" :class="isTaskInProgress ? 'btn-danger' : 'btn-primary' ">-->
+<!--            {{ isTaskInProgress ? 'Arreter' : 'Demarrer' }}-->
+<!--        </button>-->
         <div v-show="errorMsg" class="alert alert-danger mt-2" role="alert">
             {{ errorMsg }}
         </div>
@@ -34,6 +37,7 @@
                  <th scope="col">Tache</th>
                  <th scope="col"></th>
                  <th scope="col">Duree</th>
+                 <th scope="col">Action</th>
              </tr>
              </thead>
              <tbody>
@@ -42,6 +46,9 @@
                  <td>{{ task.name }}</td>
                  <td class="text-end">{{ formatTimeStamp(task.start) }} - {{ formatTimeStamp(task.end) }}</td>
                  <td>{{ durationBetweenTimestamps(task.start, task.end) }}</td>
+                 <td>
+                     <task-actions :id="task.id" v-on:delete="deleteTask($event)" v-on:restart="restartTask($event)"/>
+                 </td>
              </tr>
              </tbody>
          </table>
