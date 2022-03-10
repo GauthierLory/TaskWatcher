@@ -4,6 +4,7 @@
       row-key="id"
       empty-text="Aucune tache"
       stripe
+      v-loading="areTaskLoading"
       style="width: 100%">
 
     <el-table-column
@@ -61,6 +62,10 @@ export default {
     }
   },
   props: {
+    areTaskLoading: {
+      type: Boolean,
+      default: false
+    },
     tasks: {
       type: Array,
       default: []

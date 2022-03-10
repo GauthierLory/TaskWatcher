@@ -16,6 +16,7 @@
       <el-main>
         <TaskList
             :tasks="tasks"
+            :areTaskLoading="areTaskLoading"
             v-on="{
               restart: sendRestartTask,
               delete: deleteTask
@@ -30,6 +31,7 @@
 
 <script>
 import { v4 as uuid } from '@lukeed/uuid'
+import * as TaskService from './services/TaskService'
 import TheMenu from './components/TheMenu.vue'
 import TheTopTask from './components/TheTopTask.vue'
 import TaskList from "./components/TaskList.vue";
@@ -42,17 +44,25 @@ export default {
   },
   data() {
     return {
-      tasks: []
+      tasks: [],
+      areTaskLoading: true
     }
   },
   methods: {
-    addTask({ name, startTime }) {
+    async addTask({ name, startTime }) {
+      // add task local
       this.tasks.unshift({
         id: uuid(),
         name,
         startTime,
         endTime: Date.now()
       })
+      // add task to api
+      try {
+        await TaskService.updateAll(this.tasks)
+      } catch (e) {
+        console.error(e)
+      }
     },
     sendRestartTask (taskID) {
       // get old name task
@@ -65,17 +75,34 @@ export default {
       // restart task
       this.$refs.TheTopTask.restartTask(newTaskname)
     },
-    deleteTask (taskId) {
+    async deleteTask (taskId) {
       let taskIndex = null
       this.tasks.forEach((task, index) => {
         if ( task.id === taskId) {
           taskIndex = index
         }
       })
+      // delete task local
       this.tasks.splice(taskIndex, 1)
-      console.log('delete task', taskId, taskIndex)
+
+      // add task to api
+      try {
+        await TaskService.updateAll(this.tasks)
+      } catch (e) {
+        console.error(e)
+      }
     },
   },
+  async created() {
+    console.log(import.meta.env)
+    try {
+      this.tasks = await TaskService.getAll()
+      console.log(this.tasks)
+    } catch (e) {
+      console.error(e)
+    }
+    this.areTaskLoading = false
+  }
 }
 </script>
 

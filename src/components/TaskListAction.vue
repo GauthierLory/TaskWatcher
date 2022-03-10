@@ -1,11 +1,9 @@
 <template>
   <el-button
-  size="mini"
   @click="sendRestart">
     Relancer
   </el-button>
   <el-button
-      size="mini"
       type="danger"
       @click="sendDelete">
     Supprimer
