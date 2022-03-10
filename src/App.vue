@@ -14,6 +14,13 @@
       </el-header>
 
       <el-main>
+
+<!--        <ul>-->
+<!--          <li><router-link to="/">Home</router-link></li>-->
+<!--          <li><router-link to="/settings">Settings</router-link></li>-->
+<!--        </ul>-->
+        <RouterView/>
+
         <TaskList
             :tasks="tasks"
             :areTaskLoading="areTaskLoading"
