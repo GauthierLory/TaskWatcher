@@ -50,6 +50,22 @@ export default {
       } else {
         clearInterval(this.intervalEverySecond);
       }
+    },
+    errorMsg(newVal) {
+      if (newVal != null) {
+        this.$notify({
+          title: 'Attention',
+          message: this.errorMsg,
+          type: 'warning',
+          offset: 50,
+          duration: 3000,
+          onClose: () => {
+            if (this.errorMsg === newVal) {
+              this.errorMsg = null
+            }
+          }
+        })
+      }
     }
 },
   methods: {

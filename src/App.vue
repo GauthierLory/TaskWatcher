@@ -48,6 +48,27 @@ export default {
       areTaskLoading: true
     }
   },
+  watch: {
+    tasks: {
+      deep: true,
+      async handler(newVal, oldVal) {
+        if (newVal != null && oldVal != null) {
+          try {
+            await TaskService.updateAll(this.tasks)
+          } catch (e) {
+            console.error(e)
+            this.$notify({
+              title: 'Mode Hors-ligne',
+              message: `Synchronisation des taches impossible`,
+              type: 'error',
+              offset: 50,
+              duration: 3000
+            })
+          }
+        }
+      }
+    }
+  },
   methods: {
     async addTask({ name, startTime }) {
       // add task local
@@ -100,6 +121,14 @@ export default {
       console.log(this.tasks)
     } catch (e) {
       console.error(e)
+      this.tasks = []
+      this.$notify({
+        title: 'Mode Hors-ligne',
+        message: `Recuperation des taches impossible`,
+        type: 'error',
+        offset: 50,
+        duration: 3000
+      })
     }
     this.areTaskLoading = false
   }
