@@ -19,9 +19,7 @@
 <!--          <li><router-link to="/">Home</router-link></li>-->
 <!--          <li><router-link to="/settings">Settings</router-link></li>-->
 <!--        </ul>-->
-        <RouterView/>
-
-        <TaskList
+        <RouterView
             :tasks="tasks"
             :areTaskLoading="areTaskLoading"
             v-on="{
@@ -29,6 +27,7 @@
               delete: deleteTask
             }"
         />
+
       </el-main>
 
     </el-container>
@@ -41,11 +40,9 @@ import { v4 as uuid } from '@lukeed/uuid'
 import * as TaskService from './services/TaskService'
 import TheMenu from './components/TheMenu.vue'
 import TheTopTask from './components/TheTopTask.vue'
-import TaskList from "./components/TaskList.vue";
 
 export default {
   components: {
-    TaskList,
     TheMenu,
     TheTopTask
   },

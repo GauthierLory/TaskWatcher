@@ -1,49 +1,40 @@
 <template>
   <el-table
-      :data="tasks"
-      row-key="id"
-      empty-text="Aucune tache"
-      stripe
-      v-loading="areTaskLoading"
-      style="width: 100%">
-
-    <el-table-column
-        prop="name"
-        label="Tâche">
+    :data="tasks"
+    row-key="id"
+    empty-text="Aucune tache"
+    stripe
+    v-loading="areTaskLoading"
+    ref="table"
+    style="width: 100%"
+  >
+    <el-table-column prop="name" sort-by="startTime" label="Tâche">
     </el-table-column>
 
-    <el-table-column
-        align="right"
-        label="Début et fin"
-        width="150">
+    <el-table-column align="right" label="Début et fin" width="150">
       <template #header></template>
       <template #default="scope">
-        {{ formatTimeStamp(scope.row.startTime) }} - {{ formatTimeStamp(scope.row.endTime) }}
+        {{ formatTimeStamp(scope.row.startTime) }} -
+        {{ formatTimeStamp(scope.row.endTime) }}
       </template>
     </el-table-column>
 
-    <el-table-column
-        align="right"
-        label="Durée"
-        width="100">
+    <el-table-column align="right" label="Durée" width="100">
       <template #header></template>
       <template #default="scope">
         {{ durationBetweenTimestamps(scope.row.startTime, scope.row.endTime) }}
       </template>
     </el-table-column>
 
-    <el-table-column
-        align="right"
-        label="Actions"
-        width="@00">
+    <el-table-column align="right" label="Actions" width="@00">
       <template #header></template>
       <template #default="scope">
         <TaskListAction
-            :taskID="scope.row.id"
-            v-on="{
-              restart: sendRestart,
-              delete: sendDelete
-            }"
+          :taskID="scope.row.id"
+          v-on="{
+            restart: sendRestart,
+            delete: sendDelete,
+          }"
         />
       </template>
     </el-table-column>
@@ -54,47 +45,63 @@
 import TaskListAction from "./TaskListAction.vue";
 export default {
   components: {
-    TaskListAction
+    TaskListAction,
   },
   data() {
     return {
-      tsFormatter: Intl.DateTimeFormat('fr', { hour: '2-digit', minute: '2-digit'}),
-    }
+      tsFormatter: Intl.DateTimeFormat("fr", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
   },
   props: {
     areTaskLoading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     tasks: {
       type: Array,
-      default: []
-    }
+      default: [],
+    },
+  },
+  watch: {
+    tasks: {
+      deep: true,
+      handler() {
+        this.sortTable();
+      },
+    },
   },
   methods: {
-    handleEdit(index, row) {
-      console.log(index, row);
+    formatTimeStamp(ts) {
+      return this.tsFormatter.format(ts);
     },
-    handleDelete(index, row) {
-      console.log(index, row);
+    durationBetweenTimestamps(start, end) {
+      let seconds = Math.floor(end / 1000 - start / 1000);
+      let minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      seconds = seconds % 60;
+      minutes = minutes % 60;
+      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+        2,
+        "0"
+      )}:${String(seconds).padStart(2, "0")}`;
     },
-    formatTimeStamp (ts) {
-      return this.tsFormatter.format(ts)
+    sendRestart(data) {
+      this.$emit("restart", data);
     },
-    durationBetweenTimestamps (start, end) {
-      let seconds = Math.floor((end / 1000) - (start / 1000))
-      let minutes = Math.floor(seconds / 60)
-      const hours = Math.floor(minutes / 60)
-      seconds = seconds % 60
-      minutes = minutes % 60
-      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+    sendDelete(data) {
+      this.$emit("delete", data);
     },
-    sendRestart (data) {
-      this.$emit('restart', data)
+    sortTable() {
+      const sortBy =
+        this.$route.query.sortBy === "ascending" ? "ascending" : "descending";
+      this.$refs.table.sort("name", sortBy);
     },
-    sendDelete (data) {
-      this.$emit('delete', data)
-    }
   },
-}
+  mounted() {
+    this.sortTable();
+  },
+};
 </script>
