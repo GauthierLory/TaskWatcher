@@ -1,4 +1,10 @@
 <template>
+
+  <el-select v-model="sortBy" class="m-2" placeholder="Ordre des taches">
+    <el-option label="la plus recente" value="descending"/>
+    <el-option label="la plus ancienne" value="ascending"/>
+  </el-select>
+
   <el-table
     :data="tasks"
     row-key="id"
@@ -53,6 +59,8 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
       }),
+      defaultSortBy: 'descending',
+      sortBy: this.$route.query.sortBy === "ascending" ? "ascending" : "descending"
     };
   },
   props: {
@@ -66,6 +74,10 @@ export default {
     },
   },
   watch: {
+    sortBy(newVal) {
+      this.$router.push( { query: { sortBy: (newVal === this.defaultSortBy) ? undefined : newVal }})
+      this.sortTable()
+    },
     tasks: {
       deep: true,
       handler() {
@@ -95,9 +107,7 @@ export default {
       this.$emit("delete", data);
     },
     sortTable() {
-      const sortBy =
-        this.$route.query.sortBy === "ascending" ? "ascending" : "descending";
-      this.$refs.table.sort("name", sortBy);
+      this.$refs.table.sort("name", this.sortBy);
     },
   },
   mounted() {
@@ -105,3 +115,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.el-select {
+  float: right;
+}
+</style>
