@@ -82,6 +82,7 @@ export default {
         startTime,
         endTime: Date.now()
       })
+      console.log(this.tasks[0].id)
       // add task to api
       try {
         await TaskService.updateAll(this.tasks)
@@ -164,6 +165,10 @@ body {
     border: none !important
   }
   border-bottom: solid 1px #e6e6e6;
+}
+
+.highlight-line {
+  background-color: #40a0ff31 !important;
 }
 
 </style>

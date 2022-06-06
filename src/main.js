@@ -4,6 +4,8 @@ import * as VueRouter from 'vue-router'
 import App from './App.vue'
 import HomePage from './pages/Home.vue'
 import SettingsPage from './pages/Settings.vue'
+import SettingsApp from './components/SettingsApp.vue'
+import SettingsUser from './components/SettingsUser.vue'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -17,9 +19,23 @@ const router = VueRouter.createRouter({
             component: HomePage
         },
         {
+            path: '/:taskID',
+            component: HomePage
+        },
+        {
             path: '/settings',
             name: 'Settings',
-            component: SettingsPage
+            component: SettingsPage,
+            children: [
+                {
+                    path: 'user',
+                    component: SettingsUser
+                },
+                {
+                    path: 'app',
+                    component: SettingsApp
+                }
+            ]
         }
     ]
 })
