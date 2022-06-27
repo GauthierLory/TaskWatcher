@@ -7,10 +7,11 @@
 
 <script>
 export default {
-
+    mounted () {
+      console.log("this.$route", this.$route)
+    }
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>

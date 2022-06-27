@@ -7,8 +7,8 @@
 
   <el-table
     :data="tasks"
-    :row-class-name="checkHighLight"
-    @row-click="setHighLight"
+    :row-class-name="checkHighlight"
+    @row-click="setHighlight"
     row-key="id"
     empty-text="Aucune tache"
     v-loading="areTaskLoading"
@@ -110,15 +110,17 @@ export default {
     sortTable() {
       this.$refs.table.sort("name", this.sortBy);
     },
-    checkHighLight(row) {
+    checkHighlight({ row }) {
         if (this.$route.params.taskID && row.id === this.$route.params.taskID) {
           return 'highlight-line'
         } else {
           return ''
         }
     },
-    setHighLight(row) {
-      this.$router.push({ params: {taskID: row.id}})
+    setHighlight(row) {
+      // this.$router.push({ params: {taskID: row.id}})
+      this.$router.push({ path : '/' +  row.id })
+      console.log("this.$route sss", this.$route)
     }
   },
   mounted() {

@@ -82,7 +82,7 @@ export default {
         startTime,
         endTime: Date.now()
       })
-      console.log(this.tasks[0].id)
+      console.log("this.tasks[0].id", this.tasks[0].id)
       // add task to api
       try {
         await TaskService.updateAll(this.tasks)

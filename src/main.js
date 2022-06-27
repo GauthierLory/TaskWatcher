@@ -16,11 +16,14 @@ const router = VueRouter.createRouter({
         {
             path: '/',
             name: 'Home',
-            component: HomePage
-        },
-        {
-            path: '/:taskID',
-            component: HomePage
+            component: HomePage,
+            children: [
+                {
+                    name: 'Home',
+                    path: ':taskID',
+                    component: HomePage
+                }
+            ]
         },
         {
             path: '/settings',
@@ -29,7 +32,7 @@ const router = VueRouter.createRouter({
             children: [
                 {
                     path: 'user',
-                    component: SettingsUser
+                     component: SettingsUser
                 },
                 {
                     path: 'app',
