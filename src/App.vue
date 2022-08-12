@@ -1,56 +1,49 @@
 <template>
   <el-container>
     <el-aside width="200px">
-      <TheMenu/>
+      <TheMenu />
     </el-aside>
 
     <el-container>
-
       <el-header height="60px">
-        <TheTopTask
-            ref="TheTopTask"
-            @newTask="addTask"
-        />
+        <TheTopTask ref="TheTopTask" @newTask="addTask" />
       </el-header>
 
       <el-main>
-
-<!--        <ul>-->
-<!--          <li><router-link to="/">Home</router-link></li>-->
-<!--          <li><router-link to="/settings">Settings</router-link></li>-->
-<!--        </ul>-->
+        <!--        <ul>-->
+        <!--          <li><router-link to="/">Home</router-link></li>-->
+        <!--          <li><router-link to="/settings">Settings</router-link></li>-->
+        <!--        </ul>-->
         <RouterView
-            :tasks="tasks"
-            :areTaskLoading="areTaskLoading"
-            v-on="{
-              restart: sendRestartTask,
-              delete: deleteTask
-            }"
+          :tasks="tasks"
+          :areTaskLoading="areTaskLoading"
+          v-on="{
+            restart: sendRestartTask,
+            delete: deleteTask,
+            updateTasks: getAllTasks,
+          }"
         />
-
       </el-main>
-
     </el-container>
-
   </el-container>
 </template>
 
 <script>
-import { v4 as uuid } from '@lukeed/uuid'
-import * as TaskService from './services/TaskService'
-import TheMenu from './components/TheMenu.vue'
-import TheTopTask from './components/TheTopTask.vue'
+import { v4 as uuid } from "@lukeed/uuid";
+import * as TaskService from "./services/TaskService";
+import TheMenu from "./components/TheMenu.vue";
+import TheTopTask from "./components/TheTopTask.vue";
 
 export default {
   components: {
     TheMenu,
-    TheTopTask
+    TheTopTask,
   },
   data() {
     return {
       tasks: [],
-      areTaskLoading: true
-    }
+      areTaskLoading: true,
+    };
   },
   watch: {
     tasks: {
@@ -58,20 +51,21 @@ export default {
       async handler(newVal, oldVal) {
         if (newVal != null && oldVal != null) {
           try {
-            await TaskService.updateAll(this.tasks)
+            const test = await TaskService.updateAll(this.tasks);
+            console.log("this.tasks");
           } catch (e) {
-            console.error(e)
+            console.error(e);
             this.$notify({
-              title: 'Mode Hors-ligne',
+              title: "Mode Hors-ligne",
               message: `Synchronisation des taches impossible`,
-              type: 'error',
+              type: "error",
               offset: 50,
-              duration: 3000
-            })
+              duration: 3000,
+            });
           }
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     async addTask({ name, startTime }) {
@@ -80,69 +74,74 @@ export default {
         id: uuid(),
         name,
         startTime,
-        endTime: Date.now()
-      })
-      console.log("this.tasks[0].id", this.tasks[0].id)
+        endTime: Date.now(),
+      });
+      console.log("this.tasks[0].id", this.tasks[0].id);
       // add task to api
       try {
-        await TaskService.updateAll(this.tasks)
+        await TaskService.updateAll(this.tasks);
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     },
-    sendRestartTask (taskID) {
+    sendRestartTask(taskID) {
       // get old name task
-      let newTaskname = null
-      this.tasks.forEach(task => {
-        if ( task.id === taskID) {
-          newTaskname = task.name
+      let newTaskname = null;
+      this.tasks.forEach((task) => {
+        if (task.id === taskID) {
+          newTaskname = task.name;
         }
-      })
+      });
       // restart task
-      this.$refs.TheTopTask.restartTask(newTaskname)
+      this.$refs.TheTopTask.restartTask(newTaskname);
     },
-    async deleteTask (taskId) {
-      let taskIndex = null
+    async deleteTask(taskId) {
+      let taskIndex = null;
       this.tasks.forEach((task, index) => {
-        if ( task.id === taskId) {
-          taskIndex = index
+        if (task.id === taskId) {
+          taskIndex = index;
         }
-      })
+      });
       // delete task local
-      this.tasks.splice(taskIndex, 1)
+      this.tasks.splice(taskIndex, 1);
 
       // add task to api
       try {
-        await TaskService.updateAll(this.tasks)
+        await TaskService.updateAll(this.tasks);
       } catch (e) {
-        console.error(e)
+        console.error(e);
+      }
+    },
+
+    async getAllTasks() {
+      this.areTasksLoading = true;
+      try {
+        this.tasks = await TaskService.getAll();
+      } catch (e) {
+        console.error(e);
+        this.tasks = [];
+        this.$notify({
+          title: "Mode hors-ligne",
+          message: `Récupération des tâches impossible`,
+          type: "error",
+          offset: 50,
+          duration: 3000,
+        });
+      } finally {
+        this.areTaskLoading = false;
       }
     },
   },
   async created() {
-    console.log(import.meta.env)
-    try {
-      this.tasks = await TaskService.getAll()
-      console.log(this.tasks)
-    } catch (e) {
-      console.error(e)
-      this.tasks = []
-      this.$notify({
-        title: 'Mode Hors-ligne',
-        message: `Recuperation des taches impossible`,
-        type: 'error',
-        offset: 50,
-        duration: 3000
-      })
-    }
-    this.areTaskLoading = false
-  }
-}
+    // Récupération de toutes les tâches
+    await this.getAllTasks();
+  },
+};
 </script>
 
 <style lang="scss">
 body {
-  margin: 0
+  margin: 0;
 }
 
 #app {
@@ -162,7 +161,7 @@ body {
   line-height: 60px;
   padding: 0 !important;
   .el-input .el-input__inner {
-    border: none !important
+    border: none !important;
   }
   border-bottom: solid 1px #e6e6e6;
 }
@@ -170,5 +169,4 @@ body {
 .highlight-line {
   background-color: #40a0ff31 !important;
 }
-
 </style>

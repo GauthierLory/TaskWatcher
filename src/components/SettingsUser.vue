@@ -1,13 +1,11 @@
 <template>
-<h2>Utilisateur</h2>
+  <h2>Utilisateur</h2>
 </template>
 
 <script>
 export default {
-  name: "SettingsUser"
-}
+  name: "SettingsUser",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
