@@ -3,10 +3,12 @@ import * as VueRouter from "vue-router";
 
 import App from "./App.vue";
 import HomePage from "./pages/Home.vue";
-import SettingsPage from "./pages/Settings.vue";
-import NotFoundPage from "./pages/NotFound.vue";
-import SettingsApp from "./components/SettingsApp.vue";
-import SettingsUser from "./components/SettingsUser.vue";
+
+const LoginPage = () => import("./pages/Login.vue");
+const NotFoundPage = () => import("./pages/NotFound.vue");
+const SettingsPage = () => import("./pages/Settings.vue");
+const SettingsApp = () => import("./components/SettingsApp.vue");
+const SettingsUser = () => import("./components/SettingsUser.vue");
 
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
@@ -19,25 +21,29 @@ const router = VueRouter.createRouter({
       alias: "/home",
       name: "Home",
       component: HomePage,
-      //   children: [
-      //     {
-      //       path: ":taskID",
-      //       component: HomePage,
-      //     },
-      //   ],
+      meta: { needLoggedIn: false },
+      // children: [
+      //   {
+      //     path: ":taskID",
+      //     component: HomePage,
+      //   },
+      // ],
     },
     {
       path: "/settings",
       name: "Settings",
       component: SettingsPage,
+      meta: { needLoggedIn: false },
       children: [
         {
           path: "user",
           component: SettingsUser,
+          meta: { needLoggedIn: false },
         },
         {
           path: "app",
           component: SettingsApp,
+          meta: { needLoggedIn: false },
         },
       ],
     },
@@ -52,7 +58,23 @@ const router = VueRouter.createRouter({
         return { name: "NotFound", params: { wrongPath: to.params.wrongPath } };
       },
     },
+    {
+      path: "/login",
+      name: "Login",
+      component: LoginPage,
+      beforeEnter: (to, from) => {
+        if (localStorage.getItem("isLoggedIn")) {
+          return "/";
+        }
+      },
+    },
   ],
+});
+
+router.beforeEach((to, from) => {
+  if (to.meta.needLoggedIn && !localStorage.getItem("isLoggedIn")) {
+    return "/login";
+  }
 });
 
 const app = createApp(App);
