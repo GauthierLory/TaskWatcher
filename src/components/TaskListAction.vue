@@ -1,35 +1,25 @@
 <template>
-  <el-button
-  @click="sendRestart">
-    Relancer
-  </el-button>
-  <el-button
-      type="danger"
-      @click="sendDelete">
-    Supprimer
-  </el-button>
+  <el-button @click="sendRestart"> Relancer </el-button>
+  <el-button type="danger" @click="deleteTask(taskID)"> Supprimer </el-button>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   props: {
     taskID: {
       type: String,
-      required: true
+      required: true,
     },
   },
-  emits: ['restart', 'delete'],
+  emits: ["restart"],
   methods: {
-    sendRestart () {
-      this.$emit('restart', this.taskID)
+    ...mapActions(["deleteTask"]),
+    sendRestart() {
+      this.$emit("restart", this.taskID);
     },
-    sendDelete () {
-      this.$emit('delete', this.taskID)
-    }
-  }
-}
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

@@ -6,18 +6,13 @@
 
     <el-container>
       <el-header height="60px">
-        <TheTopTask ref="TheTopTask" @newTask="addTask" />
+        <TheTopTask ref="TheTopTask" />
       </el-header>
 
       <el-main>
-        <!--        <ul>-->
-        <!--          <li><router-link to="/">Home</router-link></li>-->
-        <!--          <li><router-link to="/settings">Settings</router-link></li>-->
-        <!--        </ul>-->
         <RouterView
           v-on="{
             restart: sendRestartTask,
-            delete: deleteTask,
           }"
         />
       </el-main>
@@ -26,7 +21,6 @@
 </template>
 
 <script>
-import { v4 as uuid } from "@lukeed/uuid";
 import TheMenu from "./components/TheMenu.vue";
 import TheTopTask from "./components/TheTopTask.vue";
 import { mapState, mapActions } from "vuex";
@@ -35,6 +29,9 @@ export default {
   components: {
     TheMenu,
     TheTopTask,
+  },
+  computed: {
+    ...mapState(["tasks", "areTasksLoading"]),
   },
   watch: {
     tasks: {
@@ -59,16 +56,6 @@ export default {
   },
   methods: {
     ...mapActions(["fetchAllTasks", "updateAllTasks"]),
-    async addTask({ name, startTime }) {
-      // add task local
-      this.tasks.unshift({
-        id: uuid(),
-        name,
-        startTime,
-        endTime: Date.now(),
-      });
-      console.log("this.tasks[0].id", this.tasks[0].id);
-    },
     sendRestartTask(taskID) {
       // get old name task
       let newTaskname = null;
@@ -80,19 +67,6 @@ export default {
       // restart task
       this.$refs.TheTopTask.restartTask(newTaskname);
     },
-    async deleteTask(taskId) {
-      let taskIndex = null;
-      this.tasks.forEach((task, index) => {
-        if (task.id === taskId) {
-          taskIndex = index;
-        }
-      });
-      // delete task local
-      this.tasks.splice(taskIndex, 1);
-    },
-  },
-  computed: {
-    ...mapState(["tasks", "areTasksLoading"]),
   },
   async created() {
     // Récupération de toutes les tâches
