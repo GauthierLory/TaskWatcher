@@ -1,12 +1,11 @@
 <template>
-
   <el-select v-model="sortBy" class="m-2" placeholder="Ordre des taches">
     <el-option label="la plus recente" value="descending"/>
     <el-option label="la plus ancienne" value="ascending"/>
   </el-select>
 
   <el-table
-    :data="tasks"
+    :data="tasks || []"
     :row-class-name="checkHighlight"
     @row-click="setHighlight"
     row-key="id"
@@ -50,6 +49,7 @@
 
 <script>
 import TaskListAction from "./TaskListAction.vue";
+import { mapState } from "vuex";
 export default {
   components: {
     TaskListAction,
@@ -64,15 +64,9 @@ export default {
       sortBy: this.$route.query.sortBy === "ascending" ? "ascending" : "descending"
     };
   },
-  props: {
-    areTaskLoading: {
-      type: Boolean,
-      default: false,
-    },
-    tasks: {
-      type: Array,
-      default: [],
-    },
+
+  computed: {
+    ...mapState(["tasks", "areTasksLoading"]),
   },
   watch: {
     sortBy(newVal) {

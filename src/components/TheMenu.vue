@@ -9,7 +9,7 @@
         : $route.path
     "
   >
-    <h3>Vue tracker {{ countPlusOne }}</h3>
+    <h3>Vue tracker</h3>
     <el-menu-item index="/">
       <el-icon
         ><svg
@@ -62,15 +62,8 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 export default {
   mounted() {},
-  computed: {
-    ...mapState(["count"]),
-    countPlusOne() {
-      return this.count + 1;
-    },
-  },
 };
 </script>
 

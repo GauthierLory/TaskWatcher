@@ -1,33 +1,35 @@
 import { createStore, createLogger } from "vuex";
+import * as TaskService from "../services/TaskService";
 
 const store = createStore({
   state() {
     return {
-      count: 5,
-      totalReset: 0,
+      tasks: null,
+      areTaskLoading: false,
     };
   },
   mutations: {
-    SET_COUNT(state, value) {
-      state.count = value;
+    SET_TASKS(state, tasks) {
+      state.tasks = tasks;
     },
-    INCREMENT_COUNT(state) {
-      state.count++;
-    },
-    INCREMENT_TOTAL_RESET(state) {
-      state.totalReset++;
+    SET_ARE_TASKS_LOADING(state, bool) {
+      state.areTaskLoading = bool;
     },
   },
   actions: {
-    resetCount({ commit }) {
-      // context === $store
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          commit("SET_COUNT", 0);
-          commit("INCREMENT_TOTAL_RESET");
-          resolve();
-        }, 2000);
-      });
+    async fetchAllTasks({ commit }) {
+      commit("SET_ARE_TASKS_LOADING", true);
+      try {
+        const allTasks = await TaskService.getAll();
+        commit("SET_TASKS", allTasks);
+        commit("SET_ARE_TASKS_LOADING", false);
+      } catch (e) {
+        commit("SET_ARE_TASKS_LOADING", false);
+        throw e;
+      }
+    },
+    async updateAllTasks({ state }) {
+      await TaskService.updateAll(state.tasks);
     },
   },
   plugins: import.meta.env.MODE !== "production" ? [createLogger()] : [],

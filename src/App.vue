@@ -15,12 +15,9 @@
         <!--          <li><router-link to="/settings">Settings</router-link></li>-->
         <!--        </ul>-->
         <RouterView
-          :tasks="tasks"
-          :areTaskLoading="areTaskLoading"
           v-on="{
             restart: sendRestartTask,
             delete: deleteTask,
-            updateTasks: getAllTasks,
           }"
         />
       </el-main>
@@ -30,20 +27,14 @@
 
 <script>
 import { v4 as uuid } from "@lukeed/uuid";
-import * as TaskService from "./services/TaskService";
 import TheMenu from "./components/TheMenu.vue";
 import TheTopTask from "./components/TheTopTask.vue";
+import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
     TheMenu,
     TheTopTask,
-  },
-  data() {
-    return {
-      tasks: [],
-      areTaskLoading: true,
-    };
   },
   watch: {
     tasks: {
@@ -51,8 +42,7 @@ export default {
       async handler(newVal, oldVal) {
         if (newVal != null && oldVal != null) {
           try {
-            const test = await TaskService.updateAll(this.tasks);
-            console.log("this.tasks");
+            await this.updateAllTasks();
           } catch (e) {
             console.error(e);
             this.$notify({
@@ -68,6 +58,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["fetchAllTasks", "updateAllTasks"]),
     async addTask({ name, startTime }) {
       // add task local
       this.tasks.unshift({
@@ -77,12 +68,6 @@ export default {
         endTime: Date.now(),
       });
       console.log("this.tasks[0].id", this.tasks[0].id);
-      // add task to api
-      try {
-        await TaskService.updateAll(this.tasks);
-      } catch (e) {
-        console.error(e);
-      }
     },
     sendRestartTask(taskID) {
       // get old name task
@@ -104,37 +89,25 @@ export default {
       });
       // delete task local
       this.tasks.splice(taskIndex, 1);
-
-      // add task to api
-      try {
-        await TaskService.updateAll(this.tasks);
-      } catch (e) {
-        console.error(e);
-      }
     },
-
-    async getAllTasks() {
-      this.areTasksLoading = true;
-      try {
-        this.tasks = await TaskService.getAll();
-      } catch (e) {
-        console.error(e);
-        this.tasks = [];
-        this.$notify({
-          title: "Mode hors-ligne",
-          message: `Récupération des tâches impossible`,
-          type: "error",
-          offset: 50,
-          duration: 3000,
-        });
-      } finally {
-        this.areTaskLoading = false;
-      }
-    },
+  },
+  computed: {
+    ...mapState(["tasks", "areTasksLoading"]),
   },
   async created() {
     // Récupération de toutes les tâches
-    await this.getAllTasks();
+    try {
+      await this.fetchAllTasks();
+    } catch (e) {
+      console.error(e);
+      this.$notify({
+        title: "Mode hors-ligne",
+        message: `Récupération des tâches impossible`,
+        type: "error",
+        offset: 50,
+        duration: 3000,
+      });
+    }
   },
 };
 </script>

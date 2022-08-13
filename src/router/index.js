@@ -15,7 +15,7 @@ const router = VueRouter.createRouter({
       alias: "/home",
       name: "Home",
       component: HomePage,
-      meta: { needJsonBin: false },
+      meta: { needJsonBin: true },
       children: [
         {
           path: ":taskID",
@@ -27,12 +27,12 @@ const router = VueRouter.createRouter({
       path: "/settings",
       name: "Settings",
       component: SettingsPage,
-      meta: { needJsonBin: false },
+      meta: { needJsonBin: true },
       children: [
         {
           path: "user",
           component: SettingsUser,
-          meta: { needJsonBin: false },
+          meta: { needJsonBin: true },
         },
         {
           path: "app",
