@@ -32,16 +32,10 @@
       </template>
     </el-table-column>
 
-    <el-table-column align="right" label="Actions" width="@00">
+    <el-table-column align="right" label="Actions" width="200">
       <template #header></template>
       <template #default="scope">
-        <TaskListAction
-          :taskID="scope.row.id"
-          v-on="{
-            restart: sendRestart,
-            delete: sendDelete,
-          }"
-        />
+        <TaskListAction :taskID="scope.row.id" :taskname="scope.row.name" />
       </template>
     </el-table-column>
   </el-table>
@@ -94,12 +88,6 @@ export default {
         2,
         "0"
       )}:${String(seconds).padStart(2, "0")}`;
-    },
-    sendRestart(data) {
-      this.$emit("restart", data);
-    },
-    sendDelete(data) {
-      this.$emit("delete", data);
     },
     sortTable() {
       this.$refs.table.sort("name", this.sortBy);

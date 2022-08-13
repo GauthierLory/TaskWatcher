@@ -10,7 +10,7 @@
     <el-col :xs="12" :span="9" :lg="6" class="actions">
       <el-button
         v-if="!isTaskInProgress"
-        @click="startTask"
+        @click="beforeStartTask"
         type="primary"
         circle
       >
@@ -30,7 +30,7 @@
           </svg>
         </el-icon>
       </el-button>
-      <el-button v-else @click="stopTask" type="danger" circle>
+      <el-button v-else @click="beforeStopTask" type="danger" circle>
         <el-icon>
           <svg
             class="icon"
@@ -53,19 +53,28 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
-      taskname: "",
-      isTaskInProgress: false,
-      startTime: null,
       nowTime: null,
       intervalEverySecond: null,
       errorMsg: null,
     };
   },
   computed: {
+    ...mapState({
+      startTime: (state) => state.currentStartTime,
+      isTaskInProgress: (state) => state.isTaskInProgress,
+    }),
+    taskname: {
+      get() {
+        return this.$store.state.currentTaskname;
+      },
+      set(value) {
+        this.$store.commit("SET_CURRENT_TASKNAME", value);
+      },
+    },
     currentDuration() {
       if (this.startTime && this.nowTime) {
         return this.durationBetweenTimestamps(this.startTime, this.nowTime);
@@ -77,10 +86,13 @@ export default {
   watch: {
     isTaskInProgress(isInProgress) {
       if (isInProgress) {
+        this.nowTime = Date.now();
         this.intervalEverySecond = setInterval(() => {
           this.nowTime = Date.now();
         }, 1000);
       } else {
+        this.errorMsg = null;
+        this.nowTime = null;
         clearInterval(this.intervalEverySecond);
       }
     },
@@ -102,8 +114,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["addTask"]),
-    startTask() {
+    ...mapActions(["startTask", "stopTask"]),
+    beforeStartTask() {
       // check
       if (this.taskname.length === 0) {
         this.errorMsg = "Le nom d'une tache ne peut pas etre vide";
@@ -115,11 +127,10 @@ export default {
         this.errorMsg = null;
       }
       // start task
-      this.isTaskInProgress = true;
-      this.startTime = Date.now();
-      this.nowTime = Date.now();
+      console.log("1");
+      this.startTask();
     },
-    stopTask() {
+    beforeStopTask() {
       // check
       if (!this.isTaskInProgress) {
         this.errorMsg = "Aucune tache n'est en cours";
@@ -127,36 +138,14 @@ export default {
       }
 
       // send the new task
-      console.log("this.taskname", this.taskname);
-      this.addTask({
-        name: this.taskname,
-        startTime: this.startTime,
-      });
-
-      // end of taks
-      this.isTaskInProgress = false;
-      this.errorMsg = null;
-      this.nowTime = null;
-      this.taskname = "";
+      this.stopTask();
     },
     toggleTask() {
       if (this.isTaskInProgress) {
-        this.stopTask();
+        this.beforeStopTask();
       } else {
-        this.startTask();
+        this.beforeStartTask();
       }
-    },
-    restartTask(newTaskname) {
-      // stop current task
-      if (this.isTaskInProgress) {
-        this.stopTask();
-      }
-      // start new task
-      this.$nextTick(function () {
-        this.taskname = newTaskname;
-        this.startTask();
-      });
-      console.log("reload task", taskId);
     },
     durationBetweenTimestamps(start, end) {
       let seconds = Math.floor(end / 1000 - start / 1000);

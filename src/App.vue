@@ -10,11 +10,7 @@
       </el-header>
 
       <el-main>
-        <RouterView
-          v-on="{
-            restart: sendRestartTask,
-          }"
-        />
+        <RouterView />
       </el-main>
     </el-container>
   </el-container>
@@ -31,7 +27,7 @@ export default {
     TheTopTask,
   },
   computed: {
-    ...mapState(["tasks", "areTasksLoading"]),
+    ...mapState(["tasks"]),
   },
   watch: {
     tasks: {
@@ -56,17 +52,6 @@ export default {
   },
   methods: {
     ...mapActions(["fetchAllTasks", "updateAllTasks"]),
-    sendRestartTask(taskID) {
-      // get old name task
-      let newTaskname = null;
-      this.tasks.forEach((task) => {
-        if (task.id === taskID) {
-          newTaskname = task.name;
-        }
-      });
-      // restart task
-      this.$refs.TheTopTask.restartTask(newTaskname);
-    },
   },
   async created() {
     // Récupération de toutes les tâches

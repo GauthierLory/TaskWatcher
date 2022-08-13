@@ -1,6 +1,11 @@
 <template>
-  <el-button @click="sendRestart"> Relancer </el-button>
-  <el-button type="danger" @click="deleteTask(taskID)"> Supprimer </el-button>
+  <el-button @click="copyToClipboard(taskname)" size="small">
+    copier
+  </el-button>
+  <el-button @click="restartTask(taskname)" size="small"> Relancer </el-button>
+  <el-button type="danger" @click="deleteTask(taskID)" size="small">
+    Supprimer
+  </el-button>
 </template>
 
 <script>
@@ -11,12 +16,22 @@ export default {
       type: String,
       required: true,
     },
+    taskname: {
+      type: String,
+      required: true,
+    },
   },
-  emits: ["restart"],
   methods: {
-    ...mapActions(["deleteTask"]),
-    sendRestart() {
-      this.$emit("restart", this.taskID);
+    ...mapActions(["deleteTask", "restartTask"]),
+    copyToClipboard(text) {
+      navigator.clipboard.writeText(text);
+      this.$notify({
+        title: "Succès",
+        message: `Le nom de la tache ${text} a été copié dans le presse-papier`,
+        type: "success",
+        offset: 50,
+        duration: 3000,
+      });
     },
   },
 };
