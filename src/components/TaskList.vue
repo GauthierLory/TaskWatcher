@@ -10,7 +10,7 @@
     @row-click="setHighlight"
     row-key="id"
     empty-text="Aucune tache"
-    v-loading="areTaskLoading"
+    v-loading="areTasksLoading"
     ref="table"
     style="width: 100%"
   >
@@ -35,18 +35,18 @@
     <el-table-column align="right" label="Actions" width="200">
       <template #header></template>
       <template #default="scope">
-        <TaskListAction :taskID="scope.row.id" :taskname="scope.row.name" />
+        <TaskListActions :taskID="scope.row.id" :taskname="scope.row.name" />
       </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script>
-import TaskListAction from "./TaskListAction.vue";
+import TaskListActions from "./TaskListActions.vue";
 import { mapState } from "vuex";
 export default {
   components: {
-    TaskListAction,
+    TaskListActions,
   },
   data() {
     return {

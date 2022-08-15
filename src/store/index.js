@@ -6,7 +6,7 @@ const store = createStore({
   state() {
     return {
       tasks: null,
-      areTaskLoading: false,
+      areTasksLoading: false,
       currentTaskname: "",
       currentStartTime: null,
       isTaskInProgress: false,
@@ -17,7 +17,7 @@ const store = createStore({
       state.tasks = tasks;
     },
     SET_ARE_TASKS_LOADING(state, bool) {
-      state.areTaskLoading = bool;
+      state.areTasksLoading = bool;
     },
     ADD_TASK(state, newTask) {
       state.tasks.unshift(newTask);
