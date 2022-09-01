@@ -98,18 +98,11 @@ export default {
     },
     errorMsg(newVal) {
       if (newVal != null) {
-        this.$notify({
+        this.sendWarning({
           title: "Attention",
           message: this.errorMsg,
-          type: "warning",
-          offset: 50,
-          duration: 3000,
-          onClose: () => {
-            if (this.errorMsg === newVal) {
-              this.errorMsg = null;
-            }
-          },
-        });
+        })
+        this.errorMsg = null
       }
     },
   },
@@ -118,6 +111,7 @@ export default {
     ...mapActions({
       startTask: 'tasks/startTask',
       stopTask: 'tasks/stopTask',
+      sendWarning: 'notifications/sendWarning'
     }),
     beforeStartTask() {
       // check

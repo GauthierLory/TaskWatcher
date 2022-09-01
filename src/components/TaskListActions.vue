@@ -25,16 +25,14 @@ export default {
     // ...mapActions(["deleteTask", "restartTask"]),
     ...mapActions({
       deleteTask: 'tasks/deleteTask',
-      restartTask: 'tasks/restartTask'
+      restartTask: 'tasks/restartTask',
+      sendSuccess: 'notifications/sendSuccess',
     }),
     copyToClipboard(text) {
       navigator.clipboard.writeText(text);
-      this.$notify({
+      this.sendSuccess({
         title: "Succès",
-        message: `Le nom de la tache ${text} a été copié dans le presse-papier`,
-        type: "success",
-        offset: 50,
-        duration: 3000,
+        message: `Le nom de la tache ${text} a été copié dans le presse-papier`
       });
     },
   },

@@ -28,7 +28,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["fetchAllTasks"]),
+    ...mapActions({
+      fetchAllTasks: 'tasks/fetchAllTasks',
+      sendSuccess: 'notifications/sendSuccess',
+      sendError: 'notifications/sendError'
+    }),
     async updateApiValues() {
       // Mise à jour des valeurs de JSONBin.io
       this.areNewValuesBeingTested = true;
@@ -48,21 +52,15 @@ export default {
         await this.fetchAllTasks();
         localStorage.setItem("jsonBinAccess", true);
         this.$emit("updateTasks");
-        this.$notify({
+        this.sendSuccess({
           title: "Succès",
-          message: `Vos clés sont enregistrés dans ce navigateur`,
-          type: "success",
-          offset: 50,
-          duration: 3000,
+          message: `Vos clés sont enregistrés dans ce navigateur`
         });
       } catch (e) {
         localStorage.removeItem("jsonBinAccess");
-        this.$notify({
+        this.sendError({
           title: "Erreur",
-          message: `Cette combinaison de fonctionne pas sur JSONBin.io`,
-          type: "error",
-          offset: 50,
-          duration: 3000,
+          message: `Cette combinaison de fonctionne pas sur JSONBin.io`
         });
       }
       this.areNewValuesBeingTested = false;
