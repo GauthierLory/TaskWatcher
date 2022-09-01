@@ -4,7 +4,10 @@
     <el-option label="la plus ancienne" value="ascending"/>
   </el-select>
 
-  <el-table
+
+  <!-- <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
+    <h3>{{ fullDateFormatter.format(dayTS) }}</h3> -->
+      <el-table
     :data="tasks || []"
     :row-class-name="checkHighlight"
     @row-click="setHighlight"
@@ -39,11 +42,13 @@
       </template>
     </el-table-column>
   </el-table>
+    <!-- </div> -->
+
 </template>
 
 <script>
 import TaskListActions from "./TaskListActions.vue";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   components: {
     TaskListActions,
@@ -54,6 +59,7 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
       }),
+      fullDateFormatter: Intl.DateTimeFormat('fr', { dateStyle: 'full' }),
       defaultSortBy: 'descending',
       sortBy: this.$route.query.sortBy === "ascending" ? "ascending" : "descending"
     };
@@ -61,16 +67,19 @@ export default {
 
   computed: {
     ...mapState(["tasks", "areTasksLoading"]),
+    ...mapGetters(['tasksByDay'])
   },
   watch: {
     sortBy(newVal) {
       this.$router.push( { query: { sortBy: (newVal === this.defaultSortBy) ? undefined : newVal }})
       this.sortTable()
     },
-    tasks: {
+    tasksByDay: {
       deep: true,
       handler() {
-        this.sortTable();
+          // this.$nextTick(() => {
+            this.sortTable()
+          // })
       },
     },
   },
@@ -91,6 +100,13 @@ export default {
     },
     sortTable() {
       this.$refs.table.sort("name", this.sortBy);
+        // console.log('this.tasksByDay',this.tasksByDay)
+        // console.log('this.$refs', this.$refs)
+        //   // console.log('dayTS',dayTS)
+        // for (let dayTS in this.tasksByDay) {
+        //   this.$refs[dayTS].sort('name', this.sortBy)
+        //   console.log('dayTS',dayTS)
+        // }
     },
     checkHighlight({ row }) {
         if (this.$route.params.taskID && row.id === this.$route.params.taskID) {

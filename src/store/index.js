@@ -1,6 +1,6 @@
 import { createStore, createLogger } from "vuex";
 import { v4 as uuid } from "@lukeed/uuid";
-import * as TaskService from "../services/TaskService";
+import * as TaskService from "../services/TaskService.js";
 
 const store = createStore({
   state() {
@@ -91,6 +91,23 @@ const store = createStore({
         commit("SET_CURRENT_TASKNAME", newTaskname);
         dispatch("startTask");
       });
+    },
+  },
+  getters: {
+    tasksByDay(state) {
+      if (state.tasks) {
+        const tasksByDay = {};
+        state.tasks.forEach((task) => {
+          const currentDayTS = new Date(task.startTime).setHours(0, 0, 0, 0);
+          if (!tasksByDay[currentDayTS]) {
+            tasksByDay[currentDayTS] = [];
+          }
+          tasksByDay[currentDayTS].push(task);
+        });
+        return tasksByDay;
+      } else {
+        return {};
+      }
     },
   },
   plugins: import.meta.env.MODE !== "production" ? [createLogger()] : [],
