@@ -27,7 +27,9 @@ export default {
     TheTopTask,
   },
   computed: {
-    ...mapState(["tasks"]),
+    ...mapState({
+      tasks: (state) => state.tasks.tasks
+    }),
   },
   watch: {
     tasks: {
@@ -51,7 +53,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["fetchAllTasks", "updateAllTasks"]),
+    ...mapActions({
+      fetchAllTasks: 'tasks/fetchAllTasks',
+      updateAllTasks: 'tasks/updateAllTasks',
+    })
+    // ...mapActions(["fetchAllTasks", "updateAllTasks"])
   },
   async created() {
     // Récupération de toutes les tâches

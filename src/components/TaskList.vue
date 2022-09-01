@@ -5,16 +5,16 @@
   </el-select>
 
 
-  <!-- <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
-    <h3>{{ fullDateFormatter.format(dayTS) }}</h3> -->
+  <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
+    <h3>{{ fullDateFormatter.format(dayTS) }}</h3>
       <el-table
-    :data="tasks || []"
+    :data="dayTasks"
     :row-class-name="checkHighlight"
     @row-click="setHighlight"
     row-key="id"
     empty-text="Aucune tache"
     v-loading="areTasksLoading"
-    ref="table"
+    :ref="dayTS"
     style="width: 100%"
   >
     <el-table-column prop="name" sort-by="startTime" label="Tâche">
@@ -42,7 +42,7 @@
       </template>
     </el-table-column>
   </el-table>
-    <!-- </div> -->
+    </div>
 
 </template>
 
@@ -66,8 +66,12 @@ export default {
   },
 
   computed: {
-    ...mapState(["tasks", "areTasksLoading"]),
-    ...mapGetters(['tasksByDay'])
+    ...mapState({
+      areTasksLoading: (state) => state.tasks.areTasksLoading,
+    }),
+    ...mapGetters({
+      tasksByDay: 'tasks/tasksByDay'
+    })
   },
   watch: {
     sortBy(newVal) {
@@ -77,9 +81,9 @@ export default {
     tasksByDay: {
       deep: true,
       handler() {
-          // this.$nextTick(() => {
+          this.$nextTick(() => {
             this.sortTable()
-          // })
+          })
       },
     },
   },
@@ -99,14 +103,14 @@ export default {
       )}:${String(seconds).padStart(2, "0")}`;
     },
     sortTable() {
-      this.$refs.table.sort("name", this.sortBy);
-        // console.log('this.tasksByDay',this.tasksByDay)
-        // console.log('this.$refs', this.$refs)
-        //   // console.log('dayTS',dayTS)
-        // for (let dayTS in this.tasksByDay) {
-        //   this.$refs[dayTS].sort('name', this.sortBy)
-        //   console.log('dayTS',dayTS)
-        // }
+      // this.$refs.table.sort("name", this.sortBy);
+        console.log('this.tasksByDay',this.tasksByDay)
+        console.log('this.$refs', this.$refs)
+          // console.log('dayTS',dayTS)
+        for (let dayTS in this.tasksByDay) {
+          this.$refs[dayTS].sort('name', this.sortBy)
+          console.log('dayTS',dayTS)
+        }
     },
     checkHighlight({ row }) {
         if (this.$route.params.taskID && row.id === this.$route.params.taskID) {
