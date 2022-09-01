@@ -2,7 +2,7 @@
   <el-button @click="copyToClipboard(taskname)" size="small">
     copier
   </el-button>
-  <el-button @click="restartTask(taskname)" size="small"> Relancer </el-button>
+  <el-button @click="restartTask(taskID)" size="small"> Relancer </el-button>
   <el-button type="danger" @click="deleteTask(taskID)" size="small">
     Supprimer
   </el-button>

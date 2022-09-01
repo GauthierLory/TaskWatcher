@@ -1,4 +1,3 @@
-
 import { v4 as uuid } from "@lukeed/uuid";
 import * as TaskService from "../../services/TaskService.js";
 
@@ -53,14 +52,9 @@ export default {
         await TaskService.updateAll(state.tasks);
       },
   
-      deleteTask({ state, commit }, taskID) {
-        let taskIndex = null;
-        state.tasks.forEach((task, index) => {
-          if (task.id === taskID) {
-            taskIndex = index;
-          }
-        });
+      deleteTask({ getters, commit }, taskID) {
         // delete task local
+        const taskIndex = getters.getTaskIndexByID(taskID)
         commit("DELETE_TASK", taskIndex);
       },
   
@@ -82,13 +76,14 @@ export default {
         commit("SET_IS_TASK_IN_PROGRESS", false);
         commit("SET_CURRENT_TASKNAME", "");
       },
-      restartTask({ state, commit, dispatch }, newTaskname) {
+      restartTask({ state, getters, commit, dispatch }, taskID) {
         // stop current task
         if (state.isTaskInProgress) {
           dispatch("stopTask");
         }
         // start new task
         setTimeout(function () {
+          const newTaskname = getters.getTaskByID(taskID).name
           commit("SET_CURRENT_TASKNAME", newTaskname);
           dispatch("startTask");
         });
@@ -110,5 +105,11 @@ export default {
           return {};
         }
       },
+      getTaskByID: (state) => (id) => {
+        return state.tasks.find((task) => task.id === id)
+      },
+      getTaskIndexByID: (state, getters) => (id) => {
+        return state.tasks.indexOf(getters.getTaskByID(id))
+      }
     },
   }
