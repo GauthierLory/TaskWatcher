@@ -27,7 +27,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="right" label="Actions" width="350">
+      <el-table-column align="right" label="Actions" width="380">
         <template #header></template>
         <template #default="scope">
           <TaskListActions :taskID="scope.row.id" :taskname="scope.row.name" />
