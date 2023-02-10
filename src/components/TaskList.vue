@@ -78,11 +78,9 @@ export default {
           this.sortTable()
         })
       },
+ },
   methods: {
-    formatTimeStamp(ts) {
-      return this.tsFormatter.format(ts);
-    },
-    durationBetweenTimestamps(start, end) {
+  durationBetweenTimestamps(start, end) {
       let seconds = Math.floor(end / 1000 - start / 1000);
       let minutes = Math.floor(seconds / 60);
       const hours = Math.floor(minutes / 60);
@@ -93,7 +91,9 @@ export default {
         "0"
       )}:${String(seconds).padStart(2, "0")}`;
   },
-  methods: {
+    formatTimeStamp(ts) {
+      return this.tsFormatter.format(ts);
+    },
     sortTable() {
       // this.$refs.table.sort("name", this.sortBy);
       // console.log('this.tasksByDay', this.tasksByDay)
