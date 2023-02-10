@@ -1,58 +1,50 @@
 <template>
+  <!-- <el-select v-model="sortBy" class="m-2" placeholder="Ordre des taches">
+    <el-option label="la plus recente" value="descending" />
+    <el-option label="la plus ancienne" value="ascending" />
+  </el-select> -->
 
-  <el-select v-model="sortBy" class="m-2" placeholder="Ordre des taches">
-    <el-option label="la plus recente" value="descending"/>
-    <el-option label="la plus ancienne" value="ascending"/>
-  </el-select>
 
-  <el-table
-    :data="tasks"
-    :row-class-name="checkHighlight"
-    @row-click="setHighlight"
-    row-key="id"
-    empty-text="Aucune tache"
-    v-loading="areTaskLoading"
-    ref="table"
-    style="width: 100%"
-  >
-    <el-table-column prop="name" sort-by="startTime" label="Tâche">
-    </el-table-column>
+  <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
+    <h3>{{ fullDateFormatter.format(dayTS) }}</h3>
+    <el-table :data="dayTasks" :row-class-name="checkHighlight" @row-click="setHighlight" row-key="id"
+      empty-text="Aucune tache" v-loading="areTasksLoading" :ref="dayTS" style="width: 100%">
+      <el-table-column prop="name" sort-by="startTime" label="Tâche">
+      </el-table-column>
 
-    <el-table-column align="right" label="Début et fin" width="150">
-      <template #header></template>
-      <template #default="scope">
-        {{ formatTimeStamp(scope.row.startTime) }} -
-        {{ formatTimeStamp(scope.row.endTime) }}
-      </template>
-    </el-table-column>
+      <el-table-column align="right" label="Début et fin" width="150">
+        <template #header></template>
+        <template #default="scope">
+          {{ formatTimeStamp(scope.row.startTime) }} -
+          {{ formatTimeStamp(scope.row.endTime) }}
+        </template>
+      </el-table-column>
 
-    <el-table-column align="right" label="Durée" width="100">
-      <template #header></template>
-      <template #default="scope">
-        {{ durationBetweenTimestamps(scope.row.startTime, scope.row.endTime) }}
-      </template>
-    </el-table-column>
+      <el-table-column align="right" label="Durée" width="100">
+        <template #header></template>
+        <template #default="scope">
+          {{ durationBetweenTimestamps(scope.row.startTime, scope.row.endTime) }}
+        </template>
+      </el-table-column>
 
-    <el-table-column align="right" label="Actions" width="@00">
-      <template #header></template>
-      <template #default="scope">
-        <TaskListAction
-          :taskID="scope.row.id"
-          v-on="{
-            restart: sendRestart,
-            delete: sendDelete,
-          }"
-        />
-      </template>
-    </el-table-column>
-  </el-table>
+      <el-table-column align="right" label="Actions" width="200">
+        <template #header></template>
+        <template #default="scope">
+          <TaskListActions :taskID="scope.row.id" :taskname="scope.row.name" />
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+
+
 </template>
 
 <script>
-import TaskListAction from "./TaskListAction.vue";
+import TaskListActions from "./TaskListActions.vue";
+import { mapState, mapGetters } from "vuex";
 export default {
   components: {
-    TaskListAction,
+    TaskListActions,
   },
   data() {
     return {
@@ -60,31 +52,33 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
       }),
+      fullDateFormatter: Intl.DateTimeFormat('fr', { dateStyle: 'full' }),
       defaultSortBy: 'descending',
       sortBy: this.$route.query.sortBy === "ascending" ? "ascending" : "descending"
     };
   },
-  props: {
-    areTaskLoading: {
-      type: Boolean,
-      default: false,
-    },
-    tasks: {
-      type: Array,
-      default: [],
-    },
+
+  computed: {
+    ...mapState({
+      areTasksLoading: (state) => state.tasks.areTasksLoading,
+    }),
+    ...mapGetters({
+      tasksByDay: 'tasks/tasksByDay'
+    })
   },
   watch: {
     sortBy(newVal) {
-      this.$router.push( { query: { sortBy: (newVal === this.defaultSortBy) ? undefined : newVal }})
+      this.$router.push({ query: { sortBy: (newVal === this.defaultSortBy) ? undefined : newVal } })
       this.sortTable()
     },
-    tasks: {
-      deep: true,
-      handler() {
-        this.sortTable();
-      },
-    },
+    // tasksByDay: {
+    //   deep: true,
+    //   handler() {
+    //     this.$nextTick(() => {
+    //       this.sortTable()
+    //     })
+    //   },
+    // },
   },
   methods: {
     formatTimeStamp(ts) {
@@ -101,36 +95,41 @@ export default {
         "0"
       )}:${String(seconds).padStart(2, "0")}`;
     },
-    sendRestart(data) {
-      this.$emit("restart", data);
-    },
-    sendDelete(data) {
-      this.$emit("delete", data);
-    },
     sortTable() {
-      this.$refs.table.sort("name", this.sortBy);
+      // this.$refs.table.sort("name", this.sortBy);
+      // console.log('this.tasksByDay', this.tasksByDay)
+      for (let dayTS in this.tasksByDay) {
+        // console.log('dayTS', dayTS)
+        this.$refs.table.sort("name", this.sortBy);
+        // this.$refs[dayTS].sort('name', this.sortBy)
+      }
     },
     checkHighlight({ row }) {
-        if (this.$route.params.taskID && row.id === this.$route.params.taskID) {
-          return 'highlight-line'
-        } else {
-          return ''
-        }
+      if (this.$route.params.taskID && row.id === this.$route.params.taskID) {
+        return 'highlight-line'
+      } else {
+        return ''
+      }
     },
     setHighlight(row) {
       // this.$router.push({ params: {taskID: row.id}})
-      this.$router.push({ path : '/' +  row.id })
-      console.log("this.$route sss", this.$route)
+      this.$router.push({ path: '/' + row.id })
+      // console.log("this.$route sss", this.$route)
     }
   },
-  mounted() {
-    this.sortTable();
-  },
+  // mounted() {
+  //   this.sortTable();
+  // },
 };
 </script>
 
 <style scoped>
 .el-select {
   float: right;
+}
+
+h3 {
+  text-align: left;
+  text-transform: capitalize;
 }
 </style>
