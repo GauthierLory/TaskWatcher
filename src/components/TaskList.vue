@@ -77,6 +77,7 @@ export default {
       },
     },
   },
+  methods: {
     formatTimeStamp(ts) {
       return this.tsFormatter.format(ts);
     },
