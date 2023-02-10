@@ -1,8 +1,8 @@
 <template>
-  <!-- <el-select v-model="sortBy" class="m-2" placeholder="Ordre des taches">
+  <el-select v-model="sortBy" class="m-2" placeholder="Ordre des taches">
     <el-option label="la plus recente" value="descending" />
     <el-option label="la plus ancienne" value="ascending" />
-  </el-select> -->
+  </el-select>
 
 
   <div v-for="dayTasks, dayTS in tasksByDay" :key="dayTS">
@@ -71,15 +71,13 @@ export default {
       this.$router.push({ query: { sortBy: (newVal === this.defaultSortBy) ? undefined : newVal } })
       this.sortTable()
     },
-    // tasksByDay: {
-    //   deep: true,
-    //   handler() {
-    //     this.$nextTick(() => {
-    //       this.sortTable()
-    //     })
-    //   },
-    // },
-  },
+    tasksByDay: {
+      deep: true,
+      handler() {
+        this.$nextTick(() => {
+          this.sortTable()
+        })
+      },
   methods: {
     formatTimeStamp(ts) {
       return this.tsFormatter.format(ts);
@@ -94,12 +92,13 @@ export default {
         2,
         "0"
       )}:${String(seconds).padStart(2, "0")}`;
-    },
+  },
+  methods: {
     sortTable() {
       // this.$refs.table.sort("name", this.sortBy);
       // console.log('this.tasksByDay', this.tasksByDay)
       for (let dayTS in this.tasksByDay) {
-        // console.log('dayTS', dayTS)
+        this.$refs[dayTS][0].sort('name', this.sortBy)
         this.$refs.table.sort("name", this.sortBy);
         // this.$refs[dayTS].sort('name', this.sortBy)
       }
@@ -117,9 +116,9 @@ export default {
       // console.log("this.$route sss", this.$route)
     }
   },
-  // mounted() {
-  //   this.sortTable();
-  // },
+  mounted() {
+    this.sortTable();
+  },
 };
 </script>
 
