@@ -9,7 +9,7 @@
       Copier
     </template>
   </TaskListActionsButton>
-  <TaskListActionsButton @click="deleteTask(taskID)" type="danger" icon="Delete">
+  <TaskListActionsButton @click="deleteTask(taskID)" type="danger" icon="Delete" >
     <template #text>
       Supprimer
     </template>
@@ -35,7 +35,6 @@ export default {
     },
   },
   methods: {
-    // ...mapActions(["deleteTask", "restartTask"]),
     ...mapActions({
       deleteTask: 'tasks/deleteTask',
       restartTask: 'tasks/restartTask',
