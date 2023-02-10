@@ -4,7 +4,7 @@
       <el-input @keyup.enter="toggleTask" v-model="taskname" placeholder="Task name" />
     </el-col>
     <el-col :xs="12" :span="9" :lg="6" class="actions">
-      <el-button v-if="!isTaskInProgress" @click="beforeStartTask" type="primary" circle>
+      <el-button v-if="!isTaskInProgress" @click="beforeStartTask" type="primary" circle size="small">
         <el-icon>
           <svg class="icon" width="200" height="200" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"
             data-v-042ca774="">
@@ -14,7 +14,7 @@
           </svg>
         </el-icon>
       </el-button>
-      <el-button v-else @click="beforeStopTask" type="danger" circle>
+      <el-button v-else @click="beforeStopTask" type="danger" round size="small">
         <el-icon>
           <svg class="icon" width="200" height="200" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"
             data-v-042ca774="">
@@ -31,7 +31,9 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import TimeStampMixin from '../mixins/timestamp.js'
 export default {
+  mixins: [TimeStampMixin],
   data() {
     return {
       nowTime: null,
@@ -120,17 +122,6 @@ export default {
       } else {
         this.beforeStartTask();
       }
-    },
-    durationBetweenTimestamps(start, end) {
-      let seconds = Math.floor(end / 1000 - start / 1000);
-      let minutes = Math.floor(seconds / 60);
-      const hours = Math.floor(minutes / 60);
-      seconds = seconds % 60;
-      minutes = minutes % 60;
-      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-        2,
-        "0"
-      )}:${String(seconds).padStart(2, "0")}`;
     },
   },
 };
