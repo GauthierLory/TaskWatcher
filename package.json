@@ -5,7 +5,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint": "eslint --ext .js,.vue src --fix"
   },
   "dependencies": {
     "@element-plus/icons": "^0.0.11",
