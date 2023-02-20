@@ -12,7 +12,10 @@ module.exports = {
     'vue/new-line-between-multi-line-property': ['warn'],
     'vue/html-self-closing': ['warn'],
     'vue/v-on-event-hyphenation': ['warn'],
-    'vue/attributes-order': ['warn']
+    'vue/attributes-order': ['warn'],
+    'vue/multi-word-component-names': ['error', {
+      ignores: ['Home', 'Settings']
+    }]
   },
   globals: {
     _: true

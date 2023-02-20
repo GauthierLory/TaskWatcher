@@ -1,83 +1,96 @@
 <template>
   <h2>Application</h2>
   <el-row>
-    <el-col :offset="6" :span="12">
+    <el-col
+      :offset="6"
+      :span="12"
+    >
       <p>Clé secrète de votre API JSONbin.io :</p>
-      <el-input placeholder="API KEY" v-model="inputValueJsonBinKey"></el-input>
+      <el-input
+        v-model="inputValueJsonBinKey"
+        placeholder="API KEY"
+      />
       <p>ID de votre bin :</p>
-      <el-input placeholder="BIN ID" v-model="inputValueJsonBinID"></el-input>
+      <el-input
+        v-model="inputValueJsonBinID"
+        placeholder="BIN ID"
+      />
       <el-button
         type="primary"
-        @click="updateApiValues"
         :loading="areNewValuesBeingTested"
-        >Confirmer</el-button
+        @click="updateApiValues"
       >
+        Confirmer
+      </el-button>
     </el-col>
   </el-row>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { updateAxiosInstance } from "../services/TaskService.js";
+import { mapActions } from 'vuex'
+import { updateAxiosInstance } from '../services/TaskService.js'
 export default {
-  data() {
+  data () {
     return {
-      inputValueJsonBinKey: "",
-      inputValueJsonBinID: "",
-      areNewValuesBeingTested: false,
-    };
+      inputValueJsonBinKey: '',
+      inputValueJsonBinID: '',
+      areNewValuesBeingTested: false
+    }
   },
+
   methods: {
     ...mapActions({
       fetchAllTasks: 'tasks/fetchAllTasks',
       sendSuccess: 'notifications/sendSuccess',
       sendError: 'notifications/sendError'
     }),
-    async updateApiValues() {
+
+    async updateApiValues () {
       // Mise à jour des valeurs de JSONBin.io
-      this.areNewValuesBeingTested = true;
-      if (this.inputValueJsonBinKey !== "") {
-        localStorage.setItem("jsonBinKey", this.inputValueJsonBinKey);
+      this.areNewValuesBeingTested = true
+      if (this.inputValueJsonBinKey !== '') {
+        localStorage.setItem('jsonBinKey', this.inputValueJsonBinKey)
       } else {
-        localStorage.removeItem("jsonBinKey");
+        localStorage.removeItem('jsonBinKey')
       }
-      if (this.inputValueJsonBinID !== "") {
-        localStorage.setItem("jsonBinID", this.inputValueJsonBinID);
+      if (this.inputValueJsonBinID !== '') {
+        localStorage.setItem('jsonBinID', this.inputValueJsonBinID)
       } else {
-        localStorage.removeItem("jsonBinID");
+        localStorage.removeItem('jsonBinID')
       }
       // Tests dela connexion avec JSONBin.io
-      updateAxiosInstance();
+      updateAxiosInstance()
       try {
-        await this.fetchAllTasks();
-        localStorage.setItem("jsonBinAccess", true);
-        this.$emit("updateTasks");
+        await this.fetchAllTasks()
+        localStorage.setItem('jsonBinAccess', true)
+        this.$emit('updateTasks')
         this.sendSuccess({
-          title: "Succès",
-          message: `Vos clés sont enregistrés dans ce navigateur`
-        });
+          title: 'Succès',
+          message: 'Vos clés sont enregistrés dans ce navigateur'
+        })
       } catch (e) {
-        localStorage.removeItem("jsonBinAccess");
+        localStorage.removeItem('jsonBinAccess')
         this.sendError({
-          title: "Erreur",
-          message: `Cette combinaison de fonctionne pas sur JSONBin.io`
-        });
+          title: 'Erreur',
+          message: 'Cette combinaison de fonctionne pas sur JSONBin.io'
+        })
       }
-      this.areNewValuesBeingTested = false;
-    },
+      this.areNewValuesBeingTested = false
+    }
   },
-  created() {
+
+  created () {
     // Mise en place des valeurs du localStorage sur l'instance
-    const jsonBinKey = localStorage.getItem("jsonBinKey");
-    const jsonBinID = localStorage.getItem("jsonBinID");
+    const jsonBinKey = localStorage.getItem('jsonBinKey')
+    const jsonBinID = localStorage.getItem('jsonBinID')
     if (jsonBinKey) {
-      this.inputValueJsonBinKey = jsonBinKey;
+      this.inputValueJsonBinKey = jsonBinKey
     }
     if (jsonBinID) {
-      this.inputValueJsonBinID = jsonBinID;
+      this.inputValueJsonBinID = jsonBinID
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss" scoped>

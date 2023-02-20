@@ -1,4 +1,4 @@
-import { createStore, createLogger } from "vuex";
+import { createStore, createLogger } from 'vuex'
 import TasksModule from './module/tasks.js'
 import NotificationsModule from './module/notifications.js'
 
@@ -7,7 +7,7 @@ const store = createStore({
     tasks: TasksModule,
     notifications: NotificationsModule
   },
-  plugins: import.meta.env.MODE !== "production" ? [createLogger()] : [],
-});
+  plugins: import.meta.env.MODE !== 'production' ? [createLogger()] : []
+})
 
-export default store;
+export default store

@@ -17,63 +17,68 @@
 </template>
 
 <script>
-import TheMenu from "./components/TheMenu.vue";
-import TheTopTask from "./components/TheTopTask.vue";
-import { mapState, mapActions, mapMutations } from "vuex";
+import TheMenu from './components/TheMenu.vue'
+import TheTopTask from './components/TheTopTask.vue'
+import { mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
   components: {
     TheMenu,
-    TheTopTask,
+    TheTopTask
   },
+
   computed: {
     ...mapState({
       tasks: (state) => state.tasks.tasks
-    }),
+    })
   },
+
   watch: {
     tasks: {
       deep: true,
-      async handler(newVal, oldVal) {
+      async handler (newVal, oldVal) {
         if (newVal != null && oldVal != null) {
           try {
-            await this.updateAllTasks();
+            await this.updateAllTasks()
           } catch (e) {
-            console.error(e);
+            console.error(e)
             this.sendError({
-              title: "Mode Hors-ligne",
-              message: `Synchronisation des taches impossible`
-            });
+              title: 'Mode Hors-ligne',
+              message: 'Synchronisation des taches impossible'
+            })
           }
         }
-      },
-    },
+      }
+    }
   },
+
   methods: {
     ...mapActions({
       fetchAllTasks: 'tasks/fetchAllTasks',
       updateAllTasks: 'tasks/updateAllTasks',
       sendError: 'notifications/sendError'
     }),
+
     ...mapMutations({
       SET_NOTIFIER: 'notifications/SET_NOTIFIER'
     })
   },
-  async created() {
+
+  async created () {
     // mise en place du systeme de notification
     this.SET_NOTIFIER(this.$notify)
     // Récupération de toutes les tâches
     try {
-      await this.fetchAllTasks();
+      await this.fetchAllTasks()
     } catch (e) {
-      console.error(e);
+      console.error(e)
       this.sendError({
-        title: "Mode hors-ligne",
-        message: `Récupération des tâches impossible`
-      });
+        title: 'Mode hors-ligne',
+        message: 'Récupération des tâches impossible'
+      })
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss">
