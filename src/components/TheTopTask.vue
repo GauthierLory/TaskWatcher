@@ -1,13 +1,29 @@
 <template>
   <el-row>
     <el-col :xs="12" :span="15" :lg="18">
-      <el-input @keyup.enter="toggleTask" v-model="taskname" placeholder="Task name" />
+      <el-input
+        @keyup.enter="toggleTask"
+        v-model="taskname"
+        placeholder="Task name"
+      />
     </el-col>
     <el-col :xs="12" :span="9" :lg="6" class="actions">
-        <el-button v-if="!isTaskInProgress" @click="beforeStartTask" icon="VideoPlay" circle type="primary">
-        </el-button>
-        <el-button v-else @click="beforeStopTask" type="danger" icon="VideoPause" circle>
-        </el-button>
+      <el-button
+        v-if="!isTaskInProgress"
+        @click="beforeStartTask"
+        icon="VideoPlay"
+        circle
+        type="primary"
+      >
+      </el-button>
+      <el-button
+        v-else
+        @click="beforeStopTask"
+        type="danger"
+        icon="VideoPause"
+        circle
+      >
+      </el-button>
       <span>{{ currentDuration }}</span>
     </el-col>
   </el-row>
@@ -15,7 +31,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import TimeStampMixin from '../mixins/timestamp.js'
+import TimeStampMixin from "../mixins/timestamp.js";
 export default {
   mixins: [TimeStampMixin],
   data() {
@@ -64,17 +80,17 @@ export default {
         this.sendWarning({
           title: "Attention",
           message: this.errorMsg,
-        })
-        this.errorMsg = null
+        });
+        this.errorMsg = null;
       }
     },
   },
   methods: {
     // ...mapActions(["startTask", "stopTask"]),
     ...mapActions({
-      startTask: 'tasks/startTask',
-      stopTask: 'tasks/stopTask',
-      sendWarning: 'notifications/sendWarning'
+      startTask: "tasks/startTask",
+      stopTask: "tasks/stopTask",
+      sendWarning: "notifications/sendWarning",
     }),
     beforeStartTask() {
       // check
