@@ -1,6 +1,7 @@
 <template>
   <TaskListActionsButton
     type="primary"
+    size="small"
     icon="video-play"
     @click="restartTask(taskID)"
   >
@@ -10,6 +11,7 @@
   </TaskListActionsButton>
   <TaskListActionsButton
     type="default"
+    size="small"
     icon="CopyDocument"
     @click="copyToClipboard(taskname)"
   >
@@ -19,6 +21,7 @@
   </TaskListActionsButton>
   <TaskListActionsButton
     type="danger"
+    size="small"
     icon="Delete"
     @click="deleteTask(taskID)"
   >
