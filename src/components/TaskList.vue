@@ -76,14 +76,9 @@
 </template>
 
 <script>
-import TaskListActions from './TaskListActions.vue'
 import TimeStampMixin from '../mixins/timestamp.js'
 import { mapState, mapGetters } from 'vuex'
 export default {
-  components: {
-    TaskListActions
-  },
-
   mixins: [TimeStampMixin],
   data () {
     return {

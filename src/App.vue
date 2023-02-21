@@ -17,16 +17,9 @@
 </template>
 
 <script>
-import TheMenu from './components/TheMenu.vue'
-import TheTopTask from './components/TheTopTask.vue'
 import { mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
-  components: {
-    TheMenu,
-    TheTopTask
-  },
-
   computed: {
     ...mapState({
       tasks: (state) => state.tasks.tasks
