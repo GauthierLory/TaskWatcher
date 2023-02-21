@@ -4,8 +4,8 @@
 
 <script>
 export default {
-  name: "SettingsUser",
-};
+  name: 'SettingsUser'
+}
 </script>
 
 <style scoped></style>

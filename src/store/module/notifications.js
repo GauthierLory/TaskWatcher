@@ -1,4 +1,4 @@
-import { v4 as uuid } from "@lukeed/uuid";
+import { v4 as uuid } from '@lukeed/uuid'
 
 export default {
   namespaced: true,
@@ -26,16 +26,16 @@ export default {
       })
       return ID
     },
-    
+
     /**
      * @param {*} { state, dispatch }
      * @param {*} {type, message, title, ...}
      */
     sendCustom ({ state, dispatch }, options) {
       const element = state.notifier({
-          offset: 50,
-          duration: 3000,
-          ...options
+        offset: 50,
+        duration: 3000,
+        ...options
       })
       return dispatch('saveNotification', element)
     },

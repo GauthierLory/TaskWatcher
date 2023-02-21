@@ -2,7 +2,11 @@
   <div>
     <h1>404</h1>
     <p>{{ $route.params.wrongPath }}</p>
-    <el-button @click="$router.go(-1)" type="primary" round>
+    <el-button
+      type="primary"
+      round
+      @click="$router.go(-1)"
+    >
       Go back
     </el-button>
   </div>
@@ -10,16 +14,16 @@
 
 <script>
 export default {
-  name: "VueTrackerNotFound",
+  name: 'VueTrackerNotFound',
 
-  data() {
-    return {};
+  data () {
+    return {}
   },
 
-  mounted() {},
+  mounted () {},
 
-  methods: {},
-};
+  methods: {}
+}
 </script>
 
 <style lang="scss" scoped></style>
